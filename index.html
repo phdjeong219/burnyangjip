@@ -7,6 +7,10 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <style>
+/* ============================================================
+   SECTION: BASE — 웹폰트, 컬러/타이포 변수, 리셋
+   (독립 배포용 실값 정의. 원본 아티팩트 테마변수 대체)
+   ============================================================ */
 @font-face{
   font-family:'Pretendard';
   src:url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Regular.woff2') format('woff2');
@@ -51,6 +55,9 @@ body{
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
+/* ============================================================
+   SECTION: LAYOUT — 앱 컨테이너 / 상단 헤더(로고·연월뱃지)
+   ============================================================ */
 .app{padding:1rem 0;font-family:var(--font-sans)}
 .container{max-width:1080px;margin:0 auto;padding:0 20px}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:0.5px solid var(--color-border-tertiary)}
@@ -60,14 +67,23 @@ body{
 .logo-text{font-size:15px;font-weight:500;color:var(--color-text-primary)}
 .logo-sub{font-size:11px;color:var(--color-text-secondary)}
 .month-tag{font-size:12px;color:var(--color-text-secondary);background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);padding:4px 12px;border-radius:var(--border-radius-md)}
+/* ============================================================
+   SECTION: SUMMARY — 상단 요약 지표 카드 (총가맹점/점검완료/평균점수/C등급)
+   ============================================================ */
 .summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
 .metric{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:14px 16px;box-shadow:0 1px 2px rgba(0,0,0,.03);text-align:center}
 .metric-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:6px}
 .metric-val{font-size:22px;font-weight:500;color:var(--color-text-primary)}
 .metric-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+/* ============================================================
+   SECTION: TABS — 대시보드/점검입력/알림경고 탭 버튼
+   ============================================================ */
 .tab-nav{display:flex;gap:4px;margin-bottom:1.25rem}
 .tab-btn{font-size:12px;padding:6px 14px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:transparent;color:var(--color-text-secondary);cursor:pointer}
 .tab-btn.on{background:linear-gradient(135deg,#00A32C 0%,#007F21 55%,#045C18 100%);color:#fff;border-color:#007F21}
+/* ============================================================
+   SECTION: STORE CARDS — 대시보드 탭 가맹점 카드 그리드
+   ============================================================ */
 .store-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.5rem}
 .store-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0;cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .12s;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04);display:flex;flex-direction:column}
 .store-card:hover{border-color:var(--color-border-secondary);box-shadow:0 6px 16px rgba(0,0,0,.08);transform:translateY(-2px)}
@@ -87,6 +103,9 @@ body{
 .bar-bg{height:5px;background:var(--color-background-secondary);border-radius:3px;overflow:hidden;margin-bottom:6px}
 .bar-fill{height:100%;border-radius:3px;transition:width .4s}
 .score-row{display:flex;justify-content:center;gap:10px;font-size:11px;color:var(--color-text-secondary)}
+/* ============================================================
+   SECTION: CHECKLIST — 패널 공통 스타일 + 점검입력 체크리스트
+   ============================================================ */
 .panel{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-bottom:1rem}
 .panel-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:8px}
 .sec-hdr{font-size:11px;font-weight:500;color:var(--color-text-secondary);padding-bottom:4px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:6px;margin-top:14px}
@@ -107,6 +126,9 @@ body{
 .btn-save:hover{filter:brightness(0.92)}
 
 /* ── 대응 방법론 패널 ── */
+/* ============================================================
+   SECTION: ACTION PANEL — 등급별 대응 방법론 (점검입력 탭 우측)
+   ============================================================ */
 .action-panel{border-radius:var(--border-radius-lg);padding:1.25rem;margin-bottom:1rem;border:0.5px solid var(--color-border-tertiary)}
 .action-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .action-grade-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
@@ -127,6 +149,9 @@ body{
 .deadline-chip b{color:var(--color-text-primary)}
 
 /* 알림 */
+/* ============================================================
+   SECTION: ALERTS — 알림/경고 탭 등급별 배너
+   ============================================================ */
 .alert-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:var(--border-radius-md);font-size:12px;margin-bottom:6px}
 .alert-danger{background:#FCEBEB;border:0.5px solid #F09595;color:#791F1F}
 .alert-warn{background:#FAEEDA;border:0.5px solid #FAC775;color:#633806}
@@ -134,6 +159,9 @@ body{
 .alert-icon{font-size:16px;margin-top:1px}
 
 /* store-select */
+/* ============================================================
+   SECTION: STORE SELECT — 점검입력 탭 상단 점포 선택 드롭다운
+   ============================================================ */
 .store-sel-wrap{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
 .store-sel-wrap label{font-size:12px;color:var(--color-text-secondary)}
 .store-sel-wrap select{font-size:13px;padding:6px 10px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-secondary);color:var(--color-text-primary)}
@@ -141,6 +169,9 @@ body{
 
 <div class="app">
 <div class="container">
+<!-- ============================================================
+     SECTION: HEADER — 로고 + 페이지 타이틀 + 연월 뱃지
+     ============================================================ -->
 <h2 style="text-align:center;font-size:15px;font-weight:600;color:var(--color-text-primary);margin-bottom:12px">번양집 가맹점 마케팅 품질관리 대시보드</h2>
 <div class="topbar">
   <div class="logo">
@@ -152,6 +183,7 @@ body{
   <div class="month-tag" id="cur-month"></div>
 </div>
 
+<!-- SECTION: SUMMARY 마크업 (내용은 JS renderSummary()가 채움) -->
 <div class="summary-grid" id="summary-grid"></div>
 
 <div class="tab-nav">
@@ -160,11 +192,17 @@ body{
   <button class="tab-btn" onclick="switchTab('alerts')"><i class="ti ti-bell" aria-hidden="true"></i> 알림 / 경고</button>
 </div>
 
+<!-- ============================================================
+     SECTION: TAB 1 — 대시보드 (가맹점 카드 그리드, JS renderStoreGrid()가 채움)
+     ============================================================ -->
 <div id="tab-dashboard">
   <p style="font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;text-align:center">가맹점별 현황 — 카드 클릭 시 점검 입력</p>
   <div class="store-grid" id="store-grid"></div>
 </div>
 
+<!-- ============================================================
+     SECTION: TAB 2 — 점검 입력 (체크리스트 + 대응방법론 + 레이더차트)
+     ============================================================ -->
 <div id="tab-checklist" style="display:none">
   <div class="store-sel-wrap">
     <label>점포 선택</label>
@@ -200,6 +238,9 @@ body{
   </div>
 </div>
 
+<!-- ============================================================
+     SECTION: TAB 3 — 알림 / 경고 (등급별 에스컬레이션, JS renderAlerts()가 채움)
+     ============================================================ -->
 <div id="tab-alerts" style="display:none">
   <div class="panel">
     <div class="panel-title"><i class="ti ti-bell" aria-hidden="true"></i> 등급 알림 / 경고</div>
@@ -207,6 +248,7 @@ body{
   </div>
 </div>
 
+<!-- SECTION: FOOTER — 저작권 표기 -->
 <footer style="text-align:center;padding:24px 0 12px;font-size:11px;color:var(--color-text-secondary)">
   Copyright © 2026 Dr_Jay. All Rights Reserved.
 </footer>
@@ -214,8 +256,14 @@ body{
 </div>
 
 <script>
+// ============================================================
+// SECTION: DATA — 가맹점 목록 (가맹점 추가 시 여기만 수정)
+// ============================================================
 const STORES=["구일점","영등포역점","당산점","신월점","까치산점","금천구청점","화곡점","역곡점","중동점","고촌점","상동점","수원인계직영점"];
 
+// ============================================================
+// SECTION: DATA — 체크리스트 항목 (A~D 영역, 항목 추가 시 여기만 수정)
+// ============================================================
 const CHECKS=[
   {sec:"A. 블로그 콘텐츠 기본 품질",items:[
     {code:"A-01",label:"월 최소 8건 이상 발행",max:10},
@@ -251,6 +299,9 @@ const CHECKS=[
 const MAX_TOTAL=CHECKS.reduce((s,sec)=>s+sec.items.reduce((ss,it)=>ss+it.max,0),0);
 
 /* ── 등급별 대응 방법론 ─────────────────────────────────── */
+// ============================================================
+// SECTION: DATA — 등급별 대응 방법론 (대응문구 수정 시 여기만 수정)
+// ============================================================
 const METHODOLOGY={
   S:{
     color:"#92400E",bg:"#FEF3C7",icon:"🏆",
@@ -308,6 +359,9 @@ const METHODOLOGY={
   }
 };
 
+// ============================================================
+// SECTION: UTILS — localStorage 저장/조회, 점수·등급 계산 함수
+// ============================================================
 function getKey(s){return'bq_'+s}
 function loadData(s){try{const d=localStorage.getItem(getKey(s));return d?JSON.parse(d):{scores:{},savedAt:null}}catch(e){return{scores:{},savedAt:null}}}
 function saveData(s,d){localStorage.setItem(getKey(s),JSON.stringify(d))}
@@ -341,6 +395,9 @@ function getWeakItems(scores){
   return fails.sort((a,b)=>b.gap-a.gap).slice(0,4);
 }
 
+// ============================================================
+// SECTION: RENDER — 화면 그리기 함수 (요약/카드/체크리스트/레이더/알림)
+// ============================================================
 function renderActionPanel(store){
   const d=loadData(store);
   const total=calcTotal(d.scores);
@@ -569,6 +626,9 @@ function openChecklist(store){
   renderChecklist(store);
 }
 
+// ============================================================
+// SECTION: EVENTS & INIT — 탭 전환, 셀렉트박스 초기화, 최초 렌더 호출
+// ============================================================
 function switchTab(tab){
   ['dashboard','checklist','alerts'].forEach(t=>{
     document.getElementById('tab-'+t).style.display=t===tab?'':'none';
