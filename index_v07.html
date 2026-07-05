@@ -180,7 +180,10 @@ body{
       <div class="logo-text">번양집 마케팅 품질관리</div>
     </div>
   </div>
-  <div class="month-tag" id="cur-month"></div>
+  <div style="text-align:right">
+    <div class="month-tag" id="cur-month"></div>
+    <div id="sync-badge" style="font-size:10px;margin-top:4px;color:var(--color-text-secondary)"></div>
+  </div>
 </div>
 
 <!-- SECTION: SUMMARY 마크업 (내용은 JS renderSummary()가 채움) -->
@@ -256,6 +259,17 @@ body{
 </div>
 
 <script>
+// ============================================================
+// SECTION: CONFIG — Google Sheets 연동 설정
+// Apps Script 배포 후 아래 SHEETS_API_URL에 실제 웹앱 URL을 채워넣으면
+// 자동으로 클라우드 동기화가 활성화됩니다. 비워두면 localStorage만 사용(오프라인 모드).
+// ============================================================
+const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbwUDIuDjLCW_SyherXakXpBZHFuoQfKAkKqo6u4ATQxRJ9SO-RxLIkcaoKv2ssh-fk6/exec';
+const now=new Date();
+const CURRENT_YM=`${now.getFullYear()}_${String(now.getMonth()+1).padStart(2,'0')}`;
+let SHEETS_CACHE={}; // key: `${ym}_${store}` -> {code:score,...}
+let SHEETS_SYNC_STATUS='off'; // 'off' | 'syncing' | 'synced' | 'error'
+
 // ============================================================
 // SECTION: DATA — 가맹점 목록 (가맹점 추가 시 여기만 수정)
 // ============================================================
@@ -362,9 +376,79 @@ const METHODOLOGY={
 // ============================================================
 // SECTION: UTILS — localStorage 저장/조회, 점수·등급 계산 함수
 // ============================================================
-function getKey(s){return'bq_'+s}
-function loadData(s){try{const d=localStorage.getItem(getKey(s));return d?JSON.parse(d):{scores:{},savedAt:null}}catch(e){return{scores:{},savedAt:null}}}
+function getKey(s){return'bq_'+CURRENT_YM+'_'+s}
+function legacyKey(s){return'bq_'+s} // v6 이전(월 구분 없던 시절) 데이터 하위호환용
+
+function loadData(s){
+  const cacheKey=CURRENT_YM+'_'+s;
+  if(SHEETS_CACHE[cacheKey]) return SHEETS_CACHE[cacheKey]; // 1순위: Sheets(공유 DB)
+  try{
+    const d=localStorage.getItem(getKey(s));
+    if(d) return JSON.parse(d); // 2순위: 이번달 로컬 저장분
+  }catch(e){}
+  try{
+    const legacy=localStorage.getItem(legacyKey(s));
+    if(legacy) return JSON.parse(legacy); // 3순위: 예전 월 미구분 로컬 저장분
+  }catch(e){}
+  return{scores:{},savedAt:null};
+}
 function saveData(s,d){localStorage.setItem(getKey(s),JSON.stringify(d))}
+
+async function fetchSheetsData(){
+  if(!SHEETS_API_URL){SHEETS_SYNC_STATUS='off';updateSyncBadge();return;}
+  SHEETS_SYNC_STATUS='syncing';updateSyncBadge();
+  try{
+    const res=await fetch(SHEETS_API_URL);
+    const json=await res.json();
+    if(json.ok){
+      const cache={};
+      json.data.forEach(row=>{
+        const key=row.ym+'_'+row.store;
+        if(!cache[key])cache[key]={scores:{},savedAt:null};
+        cache[key].scores[row.code]=Number(row.score);
+      });
+      SHEETS_CACHE=cache;
+      SHEETS_SYNC_STATUS='synced';
+    }else{
+      SHEETS_SYNC_STATUS='error';
+    }
+  }catch(e){
+    SHEETS_SYNC_STATUS='error';
+  }
+  updateSyncBadge();
+  renderSummary();renderStoreGrid();
+  const sel=document.getElementById('store-select');
+  if(sel&&sel.value)renderChecklist(sel.value);
+}
+
+async function pushToSheets(store,scoresObj){
+  if(!SHEETS_API_URL)return{ok:false,offline:true};
+  const payload={ym:CURRENT_YM,store:store,scores:Object.keys(scoresObj).map(code=>({code,score:scoresObj[code]}))};
+  try{
+    const res=await fetch(SHEETS_API_URL,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'}, // Apps Script CORS 프리플라이트 회피
+      body:JSON.stringify(payload)
+    });
+    return await res.json();
+  }catch(e){
+    return{ok:false,error:String(e)};
+  }
+}
+
+function updateSyncBadge(){
+  const el=document.getElementById('sync-badge');
+  if(!el)return;
+  const map={
+    off:{txt:'오프라인 모드(로컬 저장)',color:'var(--color-text-secondary)'},
+    syncing:{txt:'동기화 중…',color:'#378ADD'},
+    synced:{txt:'☁️ 동기화됨',color:'#3B8F1E'},
+    error:{txt:'⚠️ 동기화 실패(로컬 저장은 유지)',color:'#C43A3A'}
+  };
+  const s=map[SHEETS_SYNC_STATUS]||map.off;
+  el.textContent=s.txt;
+  el.style.color=s.color;
+}
 
 function calcTotal(scores){
   return CHECKS.reduce((s,sec)=>s+sec.items.reduce((ss,it)=>{
@@ -593,13 +677,26 @@ function updateTotal(store){
   if(gr.g==='C')gb.classList.add('pulse');
 }
 
-function saveChecklist(){
+async function saveChecklist(){
   const store=document.getElementById('store-select').value;
   const d=loadData(store);
   d.savedAt=new Date().toISOString();
-  saveData(store,d);
+  saveData(store,d); // 로컬은 항상 즉시 저장 (오프라인에서도 데이터 유실 없음)
+  SHEETS_CACHE[CURRENT_YM+'_'+store]=d; // 화면에 즉시 반영
   renderStoreGrid();renderSummary();renderAlerts();
-  alert(store+' 저장 완료');
+
+  if(SHEETS_API_URL){
+    const result=await pushToSheets(store,d.scores);
+    if(result.ok){
+      SHEETS_SYNC_STATUS='synced';updateSyncBadge();
+      alert(store+' 저장 완료 (Google Sheets 동기화됨)');
+    }else{
+      SHEETS_SYNC_STATUS='error';updateSyncBadge();
+      alert(store+' 로컬 저장 완료\n⚠️ Sheets 동기화 실패 — 인터넷 연결을 확인해주세요.');
+    }
+  }else{
+    alert(store+' 저장 완료 (로컬 저장, Sheets 미연동 상태)');
+  }
 }
 
 function renderAlerts(){
@@ -644,6 +741,7 @@ STORES.forEach(s=>{const o=document.createElement('option');o.value=s;o.textCont
 sel.addEventListener('change',()=>renderChecklist(sel.value));
 
 renderSummary();renderStoreGrid();renderChecklist(STORES[0]);
+fetchSheetsData(); // 페이지 로드시 Google Sheets에서 최신 데이터 동기화 (URL 미설정시 자동 스킵)
 </script>
 
 </body>
