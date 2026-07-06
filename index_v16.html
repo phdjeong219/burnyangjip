@@ -938,21 +938,22 @@ async function fetchReviewData(){
 }
 
 function parseKeywordText(raw){
-  // 각 "키워드" ~ 다음 "키워드" 사이 구간에서 숫자를 찾는다.
-  // 네이버 플레이스 실제 붙여넣기 형식(예: "음식이 맛있어요"\n이 키워드를 선택한 인원36)에 대응
-  const quoteRe=/"([^"]+)"/g;
-  const matches=[];
-  let m;
-  while((m=quoteRe.exec(raw))!==null){
-    matches.push({keyword:m[1].trim(),end:quoteRe.lastIndex});
-  }
+  // 따옴표 종류(일반/스마트)에 의존하지 않고, 줄 단위로 "키워드" 다음 줄의 "인원N" 또는 순수 숫자를 카운트로 매칭
+  const lines=raw.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+  const stripQuotes=s=>s.replace(/^["\u201c\u201d'\u2018\u2019]+|["\u201c\u201d'\u2018\u2019]+$/g,'').trim();
   const result=[];
-  for(let i=0;i<matches.length;i++){
-    const segStart=matches[i].end;
-    const segEnd=i+1<matches.length?raw.indexOf('"',segStart):raw.length;
-    const segment=raw.slice(segStart,segEnd<0?raw.length:segEnd);
-    const numMatch=segment.match(/(\d+)/);
-    if(numMatch)result.push({keyword:matches[i].keyword,count:parseInt(numMatch[1])});
+  let pendingKeyword=null;
+  for(const line of lines){
+    const m1=line.match(/인원\s*(\d+)/);
+    const m2=(!m1&&pendingKeyword)?line.match(/^(\d+)$/):null;
+    const m=m1||m2;
+    if(m&&pendingKeyword){
+      result.push({keyword:pendingKeyword,count:parseInt(m[1])});
+      pendingKeyword=null;
+    }else if(!m){
+      const cleaned=stripQuotes(line);
+      if(cleaned)pendingKeyword=cleaned;
+    }
   }
   return result;
 }
