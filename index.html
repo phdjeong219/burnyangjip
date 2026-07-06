@@ -193,6 +193,7 @@ body{
   <button class="tab-btn on" onclick="switchTab('dashboard')"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> 대시보드</button>
   <button class="tab-btn" onclick="switchTab('checklist')"><i class="ti ti-clipboard-check" aria-hidden="true"></i> 점검 입력</button>
   <button class="tab-btn" onclick="switchTab('alerts')"><i class="ti ti-bell" aria-hidden="true"></i> 알림 / 경고</button>
+  <button class="tab-btn" onclick="switchTab('keyword')"><i class="ti ti-search" aria-hidden="true"></i> 키워드 분석</button>
 </div>
 
 <!-- ============================================================
@@ -248,6 +249,22 @@ body{
   <div class="panel">
     <div class="panel-title"><i class="ti ti-bell" aria-hidden="true"></i> 등급 알림 / 경고</div>
     <div id="alert-list"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SECTION: TAB 4 — 키워드 분석 (네이버 검색광고 API 연동)
+     ============================================================ -->
+<div id="tab-keyword" style="display:none">
+  <div class="panel">
+    <div class="panel-title"><i class="ti ti-search" aria-hidden="true"></i> 네이버 키워드 검색량 분석</div>
+    <p style="font-size:11px;color:var(--color-text-secondary);margin-bottom:10px">쉼표(,)로 구분해서 여러 키워드를 한 번에 조회할 수 있습니다.</p>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <input id="keyword-input" type="text" placeholder="예: 냉동삼겹살,가성비고기,번양집" value="번양집,냉동삼겹살,가성비고기,근본고기" style="flex:1;padding:9px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);font-size:13px">
+      <button class="btn-save" style="width:auto;padding:9px 20px;margin-top:0" onclick="searchKeywords()">조회</button>
+    </div>
+    <div id="keyword-status" style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px"></div>
+    <div id="keyword-result"></div>
   </div>
 </div>
 
@@ -727,13 +744,67 @@ function openChecklist(store){
 // SECTION: EVENTS & INIT — 탭 전환, 셀렉트박스 초기화, 최초 렌더 호출
 // ============================================================
 function switchTab(tab){
-  ['dashboard','checklist','alerts'].forEach(t=>{
+  ['dashboard','checklist','alerts','keyword'].forEach(t=>{
     document.getElementById('tab-'+t).style.display=t===tab?'':'none';
   });
   document.querySelectorAll('.tab-btn').forEach((b,i)=>{
-    b.classList.toggle('on',['dashboard','checklist','alerts'][i]===tab);
+    b.classList.toggle('on',['dashboard','checklist','alerts','keyword'][i]===tab);
   });
   if(tab==='alerts')renderAlerts();
+}
+
+async function searchKeywords(){
+  const raw=document.getElementById('keyword-input').value.trim();
+  if(!raw){alert('키워드를 입력해주세요');return;}
+  const statusEl=document.getElementById('keyword-status');
+  const resultEl=document.getElementById('keyword-result');
+  statusEl.textContent='조회 중…';statusEl.style.color='#378ADD';
+  resultEl.innerHTML='';
+  if(!SHEETS_API_URL){
+    statusEl.textContent='⚠️ Sheets/API 연동이 설정되지 않았습니다.';statusEl.style.color='#C43A3A';
+    return;
+  }
+  try{
+    const url=`${SHEETS_API_URL}?mode=keyword&keywords=${encodeURIComponent(raw)}`;
+    const res=await fetch(url);
+    const json=await res.json();
+    if(!json.ok){
+      statusEl.textContent='⚠️ '+(json.error||'조회 실패');statusEl.style.color='#C43A3A';
+      return;
+    }
+    if(!json.data||json.data.length===0){
+      statusEl.textContent='결과 없음';statusEl.style.color='var(--color-text-secondary)';
+      return;
+    }
+    const sorted=json.data.slice().sort((a,b)=>{
+      const av=(parseInt(a.pcSearch)||0)+(parseInt(b.mobileSearch)||0);
+      const bv=(parseInt(b.pcSearch)||0)+(parseInt(b.mobileSearch)||0);
+      return bv-av;
+    });
+    statusEl.textContent=`${sorted.length}건 조회 완료`;statusEl.style.color='#3B8F1E';
+    resultEl.innerHTML=`
+      <table style="width:100%;border-collapse:collapse;font-size:12.5px">
+        <thead>
+          <tr style="border-bottom:1.5px solid var(--color-border-tertiary);text-align:left">
+            <th style="padding:8px 6px">키워드</th>
+            <th style="padding:8px 6px;text-align:right">PC 검색량</th>
+            <th style="padding:8px 6px;text-align:right">모바일 검색량</th>
+            <th style="padding:8px 6px;text-align:center">경쟁정도</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${sorted.map(k=>`
+            <tr style="border-bottom:0.5px solid var(--color-border-tertiary)">
+              <td style="padding:7px 6px;font-weight:500">${k.keyword}</td>
+              <td style="padding:7px 6px;text-align:right">${k.pcSearch}</td>
+              <td style="padding:7px 6px;text-align:right">${k.mobileSearch}</td>
+              <td style="padding:7px 6px;text-align:center">${k.compIdx||'-'}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>`;
+  }catch(e){
+    statusEl.textContent='⚠️ 요청 실패: '+e.message;statusEl.style.color='#C43A3A';
+  }
 }
 
 const sel=document.getElementById('store-select');
