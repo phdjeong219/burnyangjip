@@ -938,12 +938,21 @@ async function fetchReviewData(){
 }
 
 function parseKeywordText(raw){
-  // "키워드" 뒤에 오는 숫자를 추출 (네이버 플레이스 화면 그대로 붙여넣기 대응)
-  const re=/"([^"]+)"\s*[:\-]?\s*(\d+)/g;
-  const result=[];
+  // 각 "키워드" ~ 다음 "키워드" 사이 구간에서 숫자를 찾는다.
+  // 네이버 플레이스 실제 붙여넣기 형식(예: "음식이 맛있어요"\n이 키워드를 선택한 인원36)에 대응
+  const quoteRe=/"([^"]+)"/g;
+  const matches=[];
   let m;
-  while((m=re.exec(raw))!==null){
-    result.push({keyword:m[1].trim(),count:parseInt(m[2])});
+  while((m=quoteRe.exec(raw))!==null){
+    matches.push({keyword:m[1].trim(),end:quoteRe.lastIndex});
+  }
+  const result=[];
+  for(let i=0;i<matches.length;i++){
+    const segStart=matches[i].end;
+    const segEnd=i+1<matches.length?raw.indexOf('"',segStart):raw.length;
+    const segment=raw.slice(segStart,segEnd<0?raw.length:segEnd);
+    const numMatch=segment.match(/(\d+)/);
+    if(numMatch)result.push({keyword:matches[i].keyword,count:parseInt(numMatch[1])});
   }
   return result;
 }
