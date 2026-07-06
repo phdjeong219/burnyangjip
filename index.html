@@ -1,3 +1,90 @@
+
+/
+Claude가 응답을 완료했습니다
+하나의 줄에 열2개 만들어서 보여주세요
+
+
+사용자 요청의 정확한 의도를 파악하려 고민했습니다
+사용자 요청의 정확한 의도를 파악하려 고민했습니다
+어떤 부분을 2열로 만들어드릴까요? (방금 만든 키워드 분석 탭은 이미 2열 배치 완료된 상태입니다)
+
+키워드 분석탭 밑에 1열  키워드 검색량 분석  / 2열 블로그 검색 리서치 이렇게 나오게요
+
+
+키워드 분석 탭의 두 열 레이아웃 구현 상태를 검증했습니다
+키워드 분석 탭의 두 열 레이아웃 구현 상태를 검증했습니다
+이미 방금 만들어드린 v10 파일에 정확히 그 구조로 되어 있습니다 — 1열(좌측) = 키워드 검색량 분석, 2열(우측) = 블로그 검색 리서치. 순서도 요청하신 대로입니다.
+
+
+V10 파일에서 실제 배치 순서 재확인
+V10 파일에서 실제 배치 순서 재확인
+확인했습니다 — CSS grid-template-columns:1fr 1fr로 좌우 2열, DOM 순서상 키워드 검색량이 1열(좌), 블로그 검색이 2열(우)로 정확히 배치되어 있습니다. GitHub에 올리신 파일이 이 v10인지만 확인해주시면 됩니다.
+
+
+Presented file
+Presented file
+참고: 방금 다시 보내주신 지침 문서는 이전과 동일한 내용(레드 컬러, 100점, localStorage)입니다. 실제 시스템은 그린(
+#007F21) 컬러, 145점 만점, Google Sheets + 네이버 검색광고/블로그 API 연동까지 훨씬 앞서 진행된 상태이고, 이 차이는 계속 memory에 정확히 기록해서 추적하고 있습니다.
+
+혹시 이번엔 문서 자체를 실제 상태로 업데이트해드릴까요, 아니면 계속 이대로(문서는 참고만, 실제 작업은 memory 기준) 진행할까요?
+
+
+Index
+코드 · HTML 
+잘 나옵니다~!
+
+잘 나온다니 다행입니다! 2열 배치(키워드 검색량 / 블로그 검색) 확인 완료됐네요.
+
+이번에도 지침 문서는 이전과 동일 내용(레드 
+#8B1A1A, 100점, localStorage)입니다. 실제 시스템은 이보다 훨씬 앞서 있어서, 지금까지 쌓인 차이를 한번 정리해드릴게요 — 이번엔 아예 "실제 적용 기준"으로 문서 자체를 새로 정리해드리는 게 나을 것 같습니다.
+
+문서 vs 실제 (근거: 확실함 — 전부 직접 구현·확인 완료)
+
+항목	문서	실제
+메인 컬러	
+#8B1A1A(레드)	
+#007F21(그린), 그라데이션 
+#00A32C~
+#045C18
+체크리스트 만점	100점(A45+B35+C25+D30)	145점(A55+B35+C25+D30, 코드 실측)
+데이터 저장	localStorage	Google Sheets 실시간 연동 (Apps Script 프록시)
+탭 구성	3개(대시보드/점검입력/알림)	4개 (+ 키워드 분석: 네이버 검색광고 API + 블로그 검색 API, 2열 배치)
+배포	(언급 없음)	GitHub Pages (phdjeong219.github.io/burnyangjip), Netlify에서 전환
+로고	(언급 없음)	실제 로고(육각형+눈꽃+돼지) 헤더 반영
+지침 문서를 이 실제 상태 기준으로 새로 정리해드릴까요? 원하시면 지금 있는 문서 형식 그대로 유지하면서 내용만 업데이트한 버전을 만들어드리겠습니다.
+
+"네이버 블로그 검색 리서치" 검색 나오는 리스트 5개정도 보여주고 스크롤내려서 확인할 수 있게 할 수 있나요?
+
+
+검색 결과를 스크롤 가능하게 구성 중입니다
+검색 결과를 스크롤 가능하게 구성 중입니다
+변경된 부분만 명시
+
+
+명령 2개 실행함, 파일 수정됨, 파일 읽음
+명령 2개 실행함, 파일 수정됨, 파일 읽음
+변경 요약: 블로그 검색 결과 영역에 max-height:480px; overflow-y:auto 적용 — 대략 5개 정도 보이고, 그 아래는 내부 스크롤로 확인할 수 있습니다 (현재 조회 결과가 10건이라 나머지 5건은 스크롤).
+
+GitHub에 index.html 덮어쓰기 + index_v11.html(기록용) 업로드해주시면 됩니다.
+
+메타인지 메모: 480px이 정확히 "5개"에 맞는지는 실제 텍스트 길이(설명문 줄바꿈 수)에 따라 조금씩 달라질 수 있어서 — 근거는 "대략적 추정"입니다. 확인해보시고 5개보다 많거나 적게 보이면 숫자만 조정하면 됩니다.
+
+
+Index
+코드 · HTML 
+
+Index v11
+코드 · HTML 
+
+
+
+
+
+
+Claude는 AI이며 실수할 수 있습니다. 응답을 다시 한번 확인해 주세요.
+
+
+Index · HTML
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -52,7 +139,7 @@ body{
 </style>
 </head>
 <body>
-
+ 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 /* ============================================================
@@ -124,7 +211,7 @@ body{
 .total-grade{font-size:13px;font-weight:500;padding:4px 12px;border-radius:var(--border-radius-md)}
 .btn-save{width:100%;padding:9px;background:linear-gradient(135deg,#00A32C 0%,#007F21 55%,#045C18 100%);color:#fff;border:none;border-radius:var(--border-radius-md);font-size:13px;font-weight:500;cursor:pointer;margin-top:10px;box-shadow:0 2px 8px rgba(0,127,33,0.25);transition:filter .15s}
 .btn-save:hover{filter:brightness(0.92)}
-
+ 
 /* ── 대응 방법론 패널 ── */
 /* ============================================================
    SECTION: ACTION PANEL — 등급별 대응 방법론 (점검입력 탭 우측)
@@ -147,7 +234,7 @@ body{
 .deadline-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .deadline-chip{font-size:11px;padding:4px 10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary)}
 .deadline-chip b{color:var(--color-text-primary)}
-
+ 
 /* 알림 */
 /* ============================================================
    SECTION: ALERTS — 알림/경고 탭 등급별 배너
@@ -157,13 +244,13 @@ body{
 .alert-warn{background:#FAEEDA;border:0.5px solid #FAC775;color:#633806}
 .alert-ok{background:#EAF3DE;border:0.5px solid #97C459;color:#27500A}
 .alert-icon{font-size:16px;margin-top:1px}
-
+ 
 /* store-select */
 /* ============================================================
    SECTION: STORE SELECT — 점검입력 탭 상단 점포 선택 드롭다운
    ============================================================ */
 .store-sel-wrap{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
-
+ 
 /* ============================================================
    SECTION: KEYWORD TAB LAYOUT — 키워드검색량/블로그검색 2열 배치
    ============================================================ */
@@ -175,7 +262,7 @@ body{
 .store-sel-wrap label{font-size:12px;color:var(--color-text-secondary)}
 .store-sel-wrap select{font-size:13px;padding:6px 10px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-secondary);color:var(--color-text-primary)}
 </style>
-
+ 
 <div class="app">
 <div class="container">
 <!-- ============================================================
@@ -194,17 +281,17 @@ body{
     <div id="sync-badge" style="font-size:10px;margin-top:4px;color:var(--color-text-secondary)"></div>
   </div>
 </div>
-
+ 
 <!-- SECTION: SUMMARY 마크업 (내용은 JS renderSummary()가 채움) -->
 <div class="summary-grid" id="summary-grid"></div>
-
+ 
 <div class="tab-nav">
   <button class="tab-btn on" onclick="switchTab('dashboard')"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> 대시보드</button>
   <button class="tab-btn" onclick="switchTab('checklist')"><i class="ti ti-clipboard-check" aria-hidden="true"></i> 점검 입력</button>
   <button class="tab-btn" onclick="switchTab('alerts')"><i class="ti ti-bell" aria-hidden="true"></i> 알림 / 경고</button>
   <button class="tab-btn" onclick="switchTab('keyword')"><i class="ti ti-search" aria-hidden="true"></i> 키워드 분석</button>
 </div>
-
+ 
 <!-- ============================================================
      SECTION: TAB 1 — 대시보드 (가맹점 카드 그리드, JS renderStoreGrid()가 채움)
      ============================================================ -->
@@ -212,7 +299,7 @@ body{
   <p style="font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;text-align:center">가맹점별 현황 — 카드 클릭 시 점검 입력</p>
   <div class="store-grid" id="store-grid"></div>
 </div>
-
+ 
 <!-- ============================================================
      SECTION: TAB 2 — 점검 입력 (체크리스트 + 대응방법론 + 레이더차트)
      ============================================================ -->
@@ -250,7 +337,7 @@ body{
     </div>
   </div>
 </div>
-
+ 
 <!-- ============================================================
      SECTION: TAB 3 — 알림 / 경고 (등급별 에스컬레이션, JS renderAlerts()가 채움)
      ============================================================ -->
@@ -260,7 +347,7 @@ body{
     <div id="alert-list"></div>
   </div>
 </div>
-
+ 
 <!-- ============================================================
      SECTION: TAB 4 — 키워드 분석 (네이버 검색광고 API 연동)
      ============================================================ -->
@@ -276,7 +363,7 @@ body{
     <div id="keyword-status" style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px"></div>
     <div id="keyword-result"></div>
   </div>
-
+ 
   <div class="panel">
     <div class="panel-title"><i class="ti ti-notes" aria-hidden="true"></i> 네이버 블로그 검색 리서치</div>
     <p style="font-size:11px;color:var(--color-text-secondary);margin-bottom:10px">특정 키워드로 실제 블로그 검색 결과(콘텐츠 트렌드·경쟁 콘텐츠)를 확인합니다.</p>
@@ -285,19 +372,19 @@ body{
       <button class="btn-save" style="width:auto;padding:9px 20px;margin-top:0" onclick="searchBlogs()">검색</button>
     </div>
     <div id="blog-status" style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px"></div>
-    <div id="blog-result"></div>
+    <div id="blog-result" style="max-height:480px;overflow-y:auto"></div>
   </div>
 </div>
 </div>
-
-
+ 
+ 
 <!-- SECTION: FOOTER — 저작권 표기 -->
 <footer style="text-align:center;padding:24px 0 12px;font-size:11px;color:var(--color-text-secondary)">
   Copyright © 2026 Dr_Jay. All Rights Reserved.
 </footer>
 </div>
 </div>
-
+ 
 <script>
 // ============================================================
 // SECTION: CONFIG — Google Sheets 연동 설정
@@ -309,12 +396,12 @@ const now=new Date();
 const CURRENT_YM=`${now.getFullYear()}_${String(now.getMonth()+1).padStart(2,'0')}`;
 let SHEETS_CACHE={}; // key: `${ym}_${store}` -> {code:score,...}
 let SHEETS_SYNC_STATUS='off'; // 'off' | 'syncing' | 'synced' | 'error'
-
+ 
 // ============================================================
 // SECTION: DATA — 가맹점 목록 (가맹점 추가 시 여기만 수정)
 // ============================================================
 const STORES=["구일점","영등포역점","당산점","신월점","까치산점","금천구청점","화곡점","역곡점","중동점","고촌점","상동점","수원인계직영점"];
-
+ 
 // ============================================================
 // SECTION: DATA — 체크리스트 항목 (A~D 영역, 항목 추가 시 여기만 수정)
 // ============================================================
@@ -349,9 +436,9 @@ const CHECKS=[
     {code:"D-04",label:"신규 리뷰 수 전월 대비 유지↑",max:5},
   ]},
 ];
-
+ 
 const MAX_TOTAL=CHECKS.reduce((s,sec)=>s+sec.items.reduce((ss,it)=>ss+it.max,0),0);
-
+ 
 /* ── 등급별 대응 방법론 ─────────────────────────────────── */
 // ============================================================
 // SECTION: DATA — 등급별 대응 방법론 (대응문구 수정 시 여기만 수정)
@@ -412,13 +499,13 @@ const METHODOLOGY={
     deadlines:[],
   }
 };
-
+ 
 // ============================================================
 // SECTION: UTILS — localStorage 저장/조회, 점수·등급 계산 함수
 // ============================================================
 function getKey(s){return'bq_'+CURRENT_YM+'_'+s}
 function legacyKey(s){return'bq_'+s} // v6 이전(월 구분 없던 시절) 데이터 하위호환용
-
+ 
 function loadData(s){
   const cacheKey=CURRENT_YM+'_'+s;
   if(SHEETS_CACHE[cacheKey]) return SHEETS_CACHE[cacheKey]; // 1순위: Sheets(공유 DB)
@@ -433,7 +520,7 @@ function loadData(s){
   return{scores:{},savedAt:null};
 }
 function saveData(s,d){localStorage.setItem(getKey(s),JSON.stringify(d))}
-
+ 
 async function fetchSheetsData(){
   if(!SHEETS_API_URL){SHEETS_SYNC_STATUS='off';updateSyncBadge();return;}
   SHEETS_SYNC_STATUS='syncing';updateSyncBadge();
@@ -460,7 +547,7 @@ async function fetchSheetsData(){
   const sel=document.getElementById('store-select');
   if(sel&&sel.value)renderChecklist(sel.value);
 }
-
+ 
 async function pushToSheets(store,scoresObj){
   if(!SHEETS_API_URL)return{ok:false,offline:true};
   const payload={ym:CURRENT_YM,store:store,scores:Object.keys(scoresObj).map(code=>({code,score:scoresObj[code]}))};
@@ -475,7 +562,7 @@ async function pushToSheets(store,scoresObj){
     return{ok:false,error:String(e)};
   }
 }
-
+ 
 function updateSyncBadge(){
   const el=document.getElementById('sync-badge');
   if(!el)return;
@@ -489,13 +576,13 @@ function updateSyncBadge(){
   el.textContent=s.txt;
   el.style.color=s.color;
 }
-
+ 
 function calcTotal(scores){
   return CHECKS.reduce((s,sec)=>s+sec.items.reduce((ss,it)=>{
     const v=parseFloat(scores[it.code]);return ss+(isNaN(v)?0:Math.min(v,it.max));
   },0),0);
 }
-
+ 
 function getGrade(score,max){
   const entered=score>0;
   if(!entered)return{g:'none',label:'미입력',cls:'grade-B'};
@@ -505,11 +592,11 @@ function getGrade(score,max){
   if(p>=0.7)return{g:'B',label:'B등급',cls:'grade-B'};
   return{g:'C',label:'C등급',cls:'grade-C'};
 }
-
+ 
 function getBarColor(pct){
   if(pct>=0.9)return'#BA7517';if(pct>=0.8)return'#639922';if(pct>=0.7)return'#378ADD';return'#E24B4A';
 }
-
+ 
 function getWeakItems(scores){
   const fails=[];
   CHECKS.forEach(sec=>sec.items.forEach(it=>{
@@ -518,7 +605,7 @@ function getWeakItems(scores){
   }));
   return fails.sort((a,b)=>b.gap-a.gap).slice(0,4);
 }
-
+ 
 // ============================================================
 // SECTION: RENDER — 화면 그리기 함수 (요약/카드/체크리스트/레이더/알림)
 // ============================================================
@@ -529,7 +616,7 @@ function renderActionPanel(store){
   const gr=hasData?getGrade(total,MAX_TOTAL):{g:'none',label:'미입력',cls:'grade-B'};
   const m=METHODOLOGY[gr.g];
   const weak=hasData?getWeakItems(d.scores):[];
-
+ 
   let stepsHtml=m.steps.map(st=>`
     <div class="action-step">
       <div class="step-num" style="color:${st.nc};background:${st.nb}">${st.num}</div>
@@ -538,7 +625,7 @@ function renderActionPanel(store){
         <div class="step-desc">${st.desc}</div>
       </div>
     </div>`).join('');
-
+ 
   let weakHtml='';
   if(weak.length>0&&gr.g!=='S'&&gr.g!=='none'){
     weakHtml=`<div style="margin-top:14px">
@@ -551,14 +638,14 @@ function renderActionPanel(store){
       </div>
     </div>`;
   }
-
+ 
   let dlHtml='';
   if(m.deadlines.length>0){
     dlHtml=`<div class="deadline-row">${m.deadlines.map(dl=>`
       <div class="deadline-chip"><b>${dl.label}</b> ${dl.d}</div>`).join('')}
     </div>`;
   }
-
+ 
   document.getElementById('action-methodology').innerHTML=`
     <div class="action-panel" style="background:${m.bg};border-color:${m.color}33">
       <div class="action-header">
@@ -574,7 +661,7 @@ function renderActionPanel(store){
       ${dlHtml?`<div style="margin-top:12px;font-size:11px;font-weight:500;color:var(--color-text-secondary);margin-bottom:4px">처리 기한</div>${dlHtml}`:''}
     </div>`;
 }
-
+ 
 function renderSummary(){
   const all=STORES.map(s=>({s,d:loadData(s)}));
   const totals=all.map(({d})=>calcTotal(d.scores));
@@ -590,7 +677,7 @@ function renderSummary(){
   const now=new Date();
   document.getElementById('cur-month').textContent=`${now.getFullYear()}년 ${now.getMonth()+1}월`;
 }
-
+ 
 function renderStoreGrid(){
   document.getElementById('store-grid').innerHTML=STORES.map(name=>{
     const d=loadData(name);
@@ -611,7 +698,7 @@ function renderStoreGrid(){
     </div>`;
   }).join('');
 }
-
+ 
 function renderChecklist(store){
   const d=loadData(store);
   let html='';
@@ -634,7 +721,7 @@ function renderChecklist(store){
   renderActionPanel(store);
   renderRadar(store);
 }
-
+ 
 function renderRadar(store){
   const d=loadData(store);
   const labels=CHECKS.map(sec=>sec.sec.replace(/^[A-D]\.\s*/,''));
@@ -643,29 +730,29 @@ function renderRadar(store){
     const v=parseFloat(d.scores[it.code]);return s+(isNaN(v)?0:Math.min(v,it.max));
   },0));
   const pct=secScore.map((v,i)=>secMax[i]>0?Math.round(v/secMax[i]*100):0);
-
+ 
   const size=280,cx=size/2,cy=size/2,R=95;
   const n=4;
   const angleFor=i=>(-90+i*(360/n))*Math.PI/180;
   const ptAt=(i,r)=>[cx+r*Math.cos(angleFor(i)),cy+r*Math.sin(angleFor(i))];
-
+ 
   let gridRings='';
   [20,40,60,80,100].forEach(g=>{
     const r=R*g/100;
     const pts=[0,1,2,3].map(i=>ptAt(i,r).join(',')).join(' ');
     gridRings+=`<polygon points="${pts}" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="1"/>`;
   });
-
+ 
   let axisLines='';
   [0,1,2,3].forEach(i=>{
     const [x,y]=ptAt(i,R);
     axisLines+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="rgba(0,0,0,0.08)" stroke-width="1"/>`;
   });
-
+ 
   const dataPts=[0,1,2,3].map(i=>ptAt(i,R*pct[i]/100));
   const dataPolygon=dataPts.map(p=>p.join(',')).join(' ');
   const dataDots=dataPts.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3.5" fill="#007F21"/>`).join('');
-
+ 
   const labelPts=[0,1,2,3].map(i=>ptAt(i,R+22));
   const anchorFor=i=>i===1?'start':i===3?'end':'middle';
   const labelsHtml=[0,1,2,3].map(i=>{
@@ -673,7 +760,7 @@ function renderRadar(store){
     return `<text x="${x}" y="${y}" text-anchor="${anchorFor(i)}" font-size="11" font-weight="600" fill="var(--color-text-primary)">${labels[i]}</text>
       <text x="${x}" y="${y+13}" text-anchor="${anchorFor(i)}" font-size="10" fill="#007F21" font-weight="600">${pct[i]}%</text>`;
   }).join('');
-
+ 
   const svg=`<svg viewBox="0 0 ${size} ${size+28}" width="100%" style="overflow:visible">
     ${gridRings}
     ${axisLines}
@@ -681,16 +768,16 @@ function renderRadar(store){
     ${dataDots}
     ${labelsHtml}
   </svg>`;
-
+ 
   const legend=CHECKS.map((sec,i)=>`
     <span style="display:inline-flex;align-items:center;gap:4px;font-size:10.5px;color:var(--color-text-secondary);margin-right:10px">
       <span style="width:7px;height:7px;border-radius:50%;background:#007F21;display:inline-block"></span>
       ${labels[i]} <b style="color:#007F21">${pct[i]}%</b> (${secScore[i]}/${secMax[i]})
     </span>`).join('');
-
+ 
   document.getElementById('radarChart').innerHTML=svg+`<div style="margin-top:10px;text-align:center;line-height:1.9">${legend}</div>`;
 }
-
+ 
 function onInput(store,code,val,maxStr){
   const d=loadData(store);
   const max=parseFloat(maxStr);
@@ -704,7 +791,7 @@ function onInput(store,code,val,maxStr){
   renderStoreGrid();
   renderSummary();
 }
-
+ 
 function updateTotal(store){
   const d=loadData(store);
   const total=calcTotal(d.scores);
@@ -716,7 +803,7 @@ function updateTotal(store){
   gb.className='total-grade '+gr.cls;
   if(gr.g==='C')gb.classList.add('pulse');
 }
-
+ 
 async function saveChecklist(){
   const store=document.getElementById('store-select').value;
   const d=loadData(store);
@@ -724,7 +811,7 @@ async function saveChecklist(){
   saveData(store,d); // 로컬은 항상 즉시 저장 (오프라인에서도 데이터 유실 없음)
   SHEETS_CACHE[CURRENT_YM+'_'+store]=d; // 화면에 즉시 반영
   renderStoreGrid();renderSummary();renderAlerts();
-
+ 
   if(SHEETS_API_URL){
     const result=await pushToSheets(store,d.scores);
     if(result.ok){
@@ -738,7 +825,7 @@ async function saveChecklist(){
     alert(store+' 저장 완료 (로컬 저장, Sheets 미연동 상태)');
   }
 }
-
+ 
 function renderAlerts(){
   const items=STORES.map(name=>{
     const d=loadData(name);
@@ -747,7 +834,7 @@ function renderAlerts(){
     const gr=has?getGrade(total,MAX_TOTAL):{g:'none'};
     return{name,total,gr,has};
   }).sort((a,b)=>a.total-b.total);
-
+ 
   document.getElementById('alert-list').innerHTML=items.map(it=>{
     if(!it.has)return`<div class="alert-item alert-warn"><i class="ti ti-alert-circle alert-icon" aria-hidden="true"></i><div><div style="font-weight:500">${it.name}</div><div style="margin-top:2px">이번 달 점검 미입력 — 점검 입력 탭에서 작성해주세요.</div></div></div>`;
     if(it.gr.g==='C')return`<div class="alert-item alert-danger"><i class="ti ti-urgent alert-icon" aria-hidden="true"></i><div><div style="font-weight:500">${it.name} · C등급 (${Math.round(it.total)}점)</div><div style="margin-top:2px">즉시 점주 연락 → 24시간 이내 / 현장 방문 → 2주 이내 / 30일 개선 계획서 작성</div></div></div>`;
@@ -756,13 +843,13 @@ function renderAlerts(){
     return`<div class="alert-item alert-ok"><i class="ti ti-trophy alert-icon" aria-hidden="true"></i><div><div style="font-weight:500">${it.name} · S등급 (${Math.round(it.total)}점)</div><div style="margin-top:2px">우수 사례 선정 및 전 가맹점 공유 대상</div></div></div>`;
   }).join('');
 }
-
+ 
 function openChecklist(store){
   switchTab('checklist');
   document.getElementById('store-select').value=store;
   renderChecklist(store);
 }
-
+ 
 // ============================================================
 // SECTION: EVENTS & INIT — 탭 전환, 셀렉트박스 초기화, 최초 렌더 호출
 // ============================================================
@@ -775,7 +862,7 @@ function switchTab(tab){
   });
   if(tab==='alerts')renderAlerts();
 }
-
+ 
 async function searchKeywords(){
   const raw=document.getElementById('keyword-input').value.trim();
   if(!raw){alert('키워드를 입력해주세요');return;}
@@ -843,7 +930,7 @@ async function searchKeywords(){
     statusEl.textContent='⚠️ 요청 실패: '+e.message;statusEl.style.color='#C43A3A';
   }
 }
-
+ 
 async function searchBlogs(){
   const query=document.getElementById('blog-input').value.trim();
   if(!query){alert('검색어를 입력해주세요');return;}
@@ -879,14 +966,17 @@ async function searchBlogs(){
     statusEl.textContent='⚠️ 요청 실패: '+e.message;statusEl.style.color='#C43A3A';
   }
 }
-
+ 
 const sel=document.getElementById('store-select');
 STORES.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;sel.appendChild(o)});
 sel.addEventListener('change',()=>renderChecklist(sel.value));
-
+ 
 renderSummary();renderStoreGrid();renderChecklist(STORES[0]);
 fetchSheetsData(); // 페이지 로드시 Google Sheets에서 최신 데이터 동기화 (URL 미설정시 자동 스킵)
 </script>
-
+ 
 </body>
 </html>
+ 
+
+
