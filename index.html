@@ -163,6 +163,15 @@ body{
    SECTION: STORE SELECT — 점검입력 탭 상단 점포 선택 드롭다운
    ============================================================ */
 .store-sel-wrap{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+
+/* ============================================================
+   SECTION: KEYWORD TAB LAYOUT — 키워드검색량/블로그검색 2열 배치
+   ============================================================ */
+.keyword-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+@media (max-width:820px){
+  .keyword-grid{grid-template-columns:1fr}
+}
+.kw-jump-link{font-size:11px;color:#378ADD;cursor:pointer;text-decoration:underline;background:none;border:none;padding:0;font-family:inherit}
 .store-sel-wrap label{font-size:12px;color:var(--color-text-secondary)}
 .store-sel-wrap select{font-size:13px;padding:6px 10px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-secondary);color:var(--color-text-primary)}
 </style>
@@ -256,6 +265,7 @@ body{
      SECTION: TAB 4 — 키워드 분석 (네이버 검색광고 API 연동)
      ============================================================ -->
 <div id="tab-keyword" style="display:none">
+<div class="keyword-grid">
   <div class="panel">
     <div class="panel-title"><i class="ti ti-search" aria-hidden="true"></i> 네이버 키워드 검색량 분석</div>
     <p style="font-size:11px;color:var(--color-text-secondary);margin-bottom:10px">쉼표(,)로 구분해서 여러 키워드를 한 번에 조회할 수 있습니다.</p>
@@ -277,6 +287,7 @@ body{
     <div id="blog-status" style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px"></div>
     <div id="blog-result"></div>
   </div>
+</div>
 </div>
 
 
@@ -808,6 +819,7 @@ async function searchKeywords(){
             <th style="padding:8px 6px;text-align:right">PC 검색량</th>
             <th style="padding:8px 6px;text-align:right">모바일 검색량</th>
             <th style="padding:8px 6px;text-align:center">경쟁정도</th>
+            <th style="padding:8px 6px"></th>
           </tr>
         </thead>
         <tbody>
@@ -817,9 +829,16 @@ async function searchKeywords(){
               <td style="padding:7px 6px;text-align:right">${k.pcSearch}</td>
               <td style="padding:7px 6px;text-align:right">${k.mobileSearch}</td>
               <td style="padding:7px 6px;text-align:center">${k.compIdx||'-'}</td>
+              <td style="padding:7px 6px;text-align:right"><button class="kw-jump-link" data-kw="${k.keyword}">블로그 보기 →</button></td>
             </tr>`).join('')}
         </tbody>
       </table>`;
+    resultEl.querySelectorAll('.kw-jump-link').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        document.getElementById('blog-input').value=btn.dataset.kw;
+        searchBlogs();
+      });
+    });
   }catch(e){
     statusEl.textContent='⚠️ 요청 실패: '+e.message;statusEl.style.color='#C43A3A';
   }
