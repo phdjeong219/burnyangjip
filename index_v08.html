@@ -266,7 +266,19 @@ body{
     <div id="keyword-status" style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px"></div>
     <div id="keyword-result"></div>
   </div>
+
+  <div class="panel">
+    <div class="panel-title"><i class="ti ti-notes" aria-hidden="true"></i> 네이버 블로그 검색 리서치</div>
+    <p style="font-size:11px;color:var(--color-text-secondary);margin-bottom:10px">특정 키워드로 실제 블로그 검색 결과(콘텐츠 트렌드·경쟁 콘텐츠)를 확인합니다.</p>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <input id="blog-input" type="text" placeholder="예: 번양집 후기" value="번양집 후기" style="flex:1;padding:9px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);font-size:13px">
+      <button class="btn-save" style="width:auto;padding:9px 20px;margin-top:0" onclick="searchBlogs()">검색</button>
+    </div>
+    <div id="blog-status" style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px"></div>
+    <div id="blog-result"></div>
+  </div>
 </div>
+
 
 <!-- SECTION: FOOTER — 저작권 표기 -->
 <footer style="text-align:center;padding:24px 0 12px;font-size:11px;color:var(--color-text-secondary)">
@@ -776,6 +788,12 @@ async function searchKeywords(){
       statusEl.textContent='결과 없음';statusEl.style.color='var(--color-text-secondary)';
       return;
     }
+    // 안전장치: 응답이 키워드 데이터가 아니라 체크리스트 데이터 형태면(구버전 Apps Script 미반영) 바로 진단
+    if(json.data[0].keyword===undefined && json.data[0].code!==undefined){
+      statusEl.innerHTML='⚠️ Apps Script가 아직 예전 코드로 응답 중입니다. <b>배포 관리 → 연필아이콘 → 새 버전으로 배포</b>를 다시 확인해주세요.';
+      statusEl.style.color='#C43A3A';
+      return;
+    }
     const sorted=json.data.slice().sort((a,b)=>{
       const av=(parseInt(a.pcSearch)||0)+(parseInt(b.mobileSearch)||0);
       const bv=(parseInt(b.pcSearch)||0)+(parseInt(b.mobileSearch)||0);
@@ -802,6 +820,42 @@ async function searchKeywords(){
             </tr>`).join('')}
         </tbody>
       </table>`;
+  }catch(e){
+    statusEl.textContent='⚠️ 요청 실패: '+e.message;statusEl.style.color='#C43A3A';
+  }
+}
+
+async function searchBlogs(){
+  const query=document.getElementById('blog-input').value.trim();
+  if(!query){alert('검색어를 입력해주세요');return;}
+  const statusEl=document.getElementById('blog-status');
+  const resultEl=document.getElementById('blog-result');
+  statusEl.textContent='검색 중…';statusEl.style.color='#378ADD';
+  resultEl.innerHTML='';
+  if(!SHEETS_API_URL){
+    statusEl.textContent='⚠️ API 연동이 설정되지 않았습니다.';statusEl.style.color='#C43A3A';
+    return;
+  }
+  try{
+    const url=`${SHEETS_API_URL}?mode=blog&query=${encodeURIComponent(query)}&display=10`;
+    const res=await fetch(url);
+    const json=await res.json();
+    if(!json.ok){
+      statusEl.textContent='⚠️ '+(json.error||'검색 실패');statusEl.style.color='#C43A3A';
+      return;
+    }
+    if(!json.data||json.data.length===0){
+      statusEl.textContent='결과 없음';statusEl.style.color='var(--color-text-secondary)';
+      return;
+    }
+    statusEl.textContent=`전체 ${json.total?json.total.toLocaleString():'?'}건 중 ${json.data.length}건 표시 (유사도순)`;
+    statusEl.style.color='#3B8F1E';
+    resultEl.innerHTML=json.data.map(b=>`
+      <div style="padding:10px 0;border-bottom:0.5px solid var(--color-border-tertiary)">
+        <a href="${b.link}" target="_blank" rel="noopener" style="font-size:13px;font-weight:600;color:var(--color-text-primary);text-decoration:none">${b.title}</a>
+        <div style="font-size:12px;color:var(--color-text-secondary);margin-top:4px;line-height:1.5">${b.description}</div>
+        <div style="font-size:11px;color:var(--color-text-secondary);margin-top:4px">${b.bloggername||''} · ${b.postdate||''}</div>
+      </div>`).join('');
   }catch(e){
     statusEl.textContent='⚠️ 요청 실패: '+e.message;statusEl.style.color='#C43A3A';
   }
